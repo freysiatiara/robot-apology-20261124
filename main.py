@@ -59,6 +59,14 @@ def main() -> None:
     if written != text:
         raise SystemExit("verification failed: file content differs from entry text")
 
+    # Byte-length guard: the bytes on disk must be exactly the entry text
+    # (which already ends with a newline) encoded as UTF-8.
+    if len(written.encode("utf-8")) != len(text.encode("utf-8")):
+        raise SystemExit(
+            "verification failed: byte length %d != expected %d"
+            % (len(written.encode("utf-8")), len(text.encode("utf-8")))
+        )
+
     print("Wrote %d characters to %s" % (len(text), path))
 
 
